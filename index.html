@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#911007; --red-2:#7a0d06; --red-deep:#520904; --red-bright:#d21f10;
+    --ink:#130f0d; --ink-2:#1f1815; --cream:#efe8da; --white:#fbf7ef;
+    --mut:rgba(251,247,239,.62); --mut-2:rgba(251,247,239,.4); --line:rgba(251,247,239,.16);
+    --ink-mut:rgba(20,15,12,.6); --ink-line:rgba(20,15,12,.12);
+    --fd:'Montserrat',sans-serif; --fb:'Inter',sans-serif; --fm:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--red);color:var(--white);font-family:var(--fb);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  ::selection{background:var(--white);color:var(--red);}
+  ::placeholder{color:rgba(251,247,239,.38);}
+  img{display:block;}
+  @keyframes mr-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @keyframes mr-spin{to{transform:rotate(360deg)}}
+  @keyframes heartRate{from{stroke-dashoffset:814}to{stroke-dashoffset:-814px}}
+  @keyframes mr-c3d-run{from{transform:perspective(1200px) rotateY(-360deg)}to{transform:perspective(1200px) rotateY(0deg)}}
+  @keyframes mr-c3d-bright{10%{filter:brightness(1)}50%{filter:brightness(.12)}90%{filter:brightness(1)}}
+  .mr-c3d{position:relative;width:420px;height:380px;max-width:88vw;transform-style:preserve-3d;transform:perspective(1200px);animation:mr-c3d-run 24s linear infinite;will-change:transform;}
+  .mr-c3d > div{position:absolute;width:190px;height:266px;border-radius:16px;top:50%;left:50%;transform-origin:center center;animation:mr-c3d-bright 24s linear infinite;will-change:transform,filter;overflow:hidden;border:1px solid rgba(255,255,255,.16);box-shadow:0 20px 44px rgba(0,0,0,.45);}
+  .mr-c3d:hover,.mr-c3d:hover > div{animation-play-state:paused!important;}
+  .mr-c3d > div:nth-child(1){transform:translate(-50%,-50%) rotateY(0deg) translateZ(370px);animation-delay:0s;}
+  .mr-c3d > div:nth-child(2){transform:translate(-50%,-50%) rotateY(36deg) translateZ(370px);animation-delay:-2.4s;}
+  .mr-c3d > div:nth-child(3){transform:translate(-50%,-50%) rotateY(72deg) translateZ(370px);animation-delay:-4.8s;}
+  .mr-c3d > div:nth-child(4){transform:translate(-50%,-50%) rotateY(108deg) translateZ(370px);animation-delay:-7.2s;}
+  .mr-c3d > div:nth-child(5){transform:translate(-50%,-50%) rotateY(144deg) translateZ(370px);animation-delay:-9.6s;}
+  .mr-c3d > div:nth-child(6){transform:translate(-50%,-50%) rotateY(180deg) translateZ(370px);animation-delay:-12s;}
+  .mr-c3d > div:nth-child(7){transform:translate(-50%,-50%) rotateY(216deg) translateZ(370px);animation-delay:-14.4s;}
+  .mr-c3d > div:nth-child(8){transform:translate(-50%,-50%) rotateY(252deg) translateZ(370px);animation-delay:-16.8s;}
+  .mr-c3d > div:nth-child(9){transform:translate(-50%,-50%) rotateY(288deg) translateZ(370px);animation-delay:-19.2s;}
+  .mr-c3d > div:nth-child(10){transform:translate(-50%,-50%) rotateY(324deg) translateZ(370px);animation-delay:-21.6s;}
+  .mr-ig{border:none;border-radius:50%;width:54px;height:54px;display:inline-flex;align-items:center;justify-content:center;transition-duration:.4s;cursor:pointer;position:relative;background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);overflow:hidden;text-decoration:none;flex-shrink:0;}
+  .mr-ig .mr-ig-svg{transition-duration:.3s;display:flex;}
+  .mr-ig .mr-ig-svg path{fill:#fff;}
+  .mr-ig .mr-ig-text{position:absolute;color:#fff;width:120px;font-family:var(--fb);font-size:.82rem;font-weight:600;opacity:0;transition-duration:.4s;text-align:center;}
+  .mr-ig:hover{width:140px;transition-duration:.4s;border-radius:30px;}
+  .mr-ig:hover .mr-ig-text{opacity:1;transition-duration:.4s;}
+  .mr-ig:hover .mr-ig-svg{opacity:0;transition-duration:.3s;}
+  @keyframes mr-hint{0%{transform:translateY(0);opacity:.2}50%{opacity:1}100%{transform:translateY(14px);opacity:.2}}
+  @keyframes mr-gyro{from{transform:rotateX(-18deg) rotateY(0deg)}to{transform:rotateX(-18deg) rotateY(360deg)}}
+  @keyframes mr-pulse{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.55);opacity:.3}}
+  @keyframes mr-fadeup{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+  @keyframes mr-scaleup{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
+  @keyframes mr-badge-pulse{0%{box-shadow:0 0 0 0 rgba(210,31,16,.6)}70%{box-shadow:0 0 0 7px rgba(210,31,16,0)}100%{box-shadow:0 0 0 0 rgba(210,31,16,0)}}
+  @keyframes mr-badge-dot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.25);opacity:.7}}
+  .mr-mat:hover{background:rgba(251,247,239,.08)!important;border-color:rgba(251,247,239,.32)!important;}
+  .mr-mat:hover .mr-mat-ico{transform:rotate(-8deg) scale(1.12);}
+  .mr-mat:hover .mr-mat-ico .mr-pg{transform:translateX(2px);}
+  @keyframes mr-logo-pulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 18px rgba(145,16,7,.7))}50%{transform:scale(1.06);filter:drop-shadow(0 0 36px rgba(180,22,8,.9))}}
+  #mrLoader{position:fixed;inset:0;z-index:9998;background:#0a0302;display:flex;align-items:center;justify-content:center;transition:opacity .7s cubic-bezier(.4,0,.2,1),visibility .7s;}
+  #mrLoader.mr-gone{opacity:0;visibility:hidden;pointer-events:none;}
+  #mrLoader img{animation:mr-logo-pulse 1.6s ease-in-out infinite;}
+  html{scroll-behavior:smooth;scroll-padding-top:80px;}
+  @keyframes mr-modal-in{from{opacity:0;transform:scale(.94) translateY(18px)}to{opacity:1;transform:none}}
+  .mr-chip{font-family:'Instrument Sans',sans-serif;font-size:13px;font-weight:500;padding:9px 17px;border-radius:100px;background:rgba(251,247,239,.03);border:1px solid rgba(251,247,239,.2);color:rgba(251,247,239,.7);cursor:pointer;white-space:nowrap;transition:background .18s,border-color .18s,color .18s,transform .12s;}
+  .mr-chip:hover{border-color:rgba(251,247,239,.55);color:rgba(251,247,239,.95);background:rgba(251,247,239,.07);}
+  .mr-chip:active{transform:scale(.95);}
+  .mr-chip-sel{background:#b41608!important;border-color:#b41608!important;color:#fff!important;box-shadow:0 4px 14px rgba(180,22,8,.4)!important;}
+  .mr-fld{background:rgba(251,247,239,.04);border:1px solid rgba(251,247,239,.13);border-radius:12px;outline:none;color:#fbf7ef;font-family:'Instrument Sans',sans-serif;font-size:1rem;padding:13px 15px;width:100%;transition:border-color .22s,background .22s,box-shadow .22s;}
+  .mr-fld::placeholder{color:rgba(251,247,239,.32);}
+  .mr-fld:focus{border-color:#b41608;background:rgba(180,22,8,.07);box-shadow:0 0 0 3px rgba(180,22,8,.14);}
+  .mr-flabel{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(251,247,239,.5);margin-bottom:9px;display:block;}
+  .mr-fsec{margin-bottom:24px;}
+  #mrJoinFormWrap::-webkit-scrollbar{width:4px;} #mrJoinFormWrap::-webkit-scrollbar-thumb{background:rgba(251,247,239,.12);border-radius:2px;}
+  @media (hover:hover) and (pointer:fine){
+    body{cursor:none;}
+    a,button,input,select,textarea,[data-cursor]{cursor:none;}
+  }
+  @media (max-width:860px){ .mr-cursor{display:none!important;} body{cursor:auto;} }
+  @media (max-width:920px){
+    [data-collapse]{grid-template-columns:1fr!important;gap:40px!important;}
+    [data-collapse-2]{grid-template-columns:1fr 1fr!important;}
+  }
+  @media (max-width:780px){
+    #mrNavLinks{display:none!important;}
+  }
+  @media (max-width:600px){
+    [data-collapse-2]{grid-template-columns:1fr!important;}
+    #mrNav{padding-left:20px!important;padding-right:20px!important;}
+  }
+</style>
+</helmet>
+
+<div id="mrLoader" aria-hidden="true">
+  <img src="assets/logo-icon.png" alt="MediReady" style="width:96px;height:96px;border-radius:22px;box-shadow:0 16px 52px rgba(145,16,7,.6);"/>
+</div>
+
+<div class="mr-cursor" id="mrCursorRing" style="position:fixed;top:-100px;left:-100px;width:42px;height:42px;border:1px solid var(--white);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .3s cubic-bezier(.16,1,.3,1),height .3s cubic-bezier(.16,1,.3,1),background .3s,border-color .3s;mix-blend-mode:difference;"></div>
+<div class="mr-cursor" id="mrCursorDot" style="position:fixed;top:-100px;left:-100px;width:5px;height:5px;background:var(--white);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;"></div>
+
+<div id="top"></div>
+
+<nav id="mrNav" style="position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:24px 44px;transition:padding .45s cubic-bezier(.16,1,.3,1),background .5s,backdrop-filter .5s,border-color .5s;border-bottom:1px solid transparent;">
+    <a href="#top" data-cursor="hover" data-magnetic style="display:flex;align-items:center;gap:13px;text-decoration:none;position:relative;">
+    <img src="assets/logo-icon.png" alt="MediReady" style="width:56px;height:56px;border-radius:13px;flex-shrink:0;"/>
+    <div id="logoPopup" style="position:absolute;top:calc(100% + 12px);left:0;transform:translateY(10px) scale(.95);transform-origin:top left;opacity:0;transition:opacity .28s cubic-bezier(.16,1,.3,1),transform .28s cubic-bezier(.16,1,.3,1);pointer-events:none;z-index:400;background:linear-gradient(118deg,#2a0a07 0%,#1a0504 100%);border:1px solid rgba(180,22,8,.38);border-radius:18px;padding:14px 26px 14px 14px;box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 0 1px rgba(145,16,7,.22);display:flex;align-items:center;gap:15px;white-space:nowrap;">
+      <img src="assets/logo-icon.png" alt="" style="width:48px;height:48px;border-radius:12px;flex-shrink:0;"/>
+      <div style="display:flex;flex-direction:column;gap:1px;">
+        <span style="font-family:'Instrument Sans',sans-serif;font-weight:700;font-size:1.35rem;letter-spacing:-.02em;color:#fbf7ef;line-height:1.1;">Medi<span style="font-weight:300;">Ready</span></span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(251,247,239,.45);">Slovensko</span>
+      </div>
+    </div>
+  </a>
+  <div id="mrNavLinks" style="display:flex;align-items:center;gap:28px;white-space:nowrap;">
+    <a href="#pristup" data-cursor="hover" style="font-family:var(--fm);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);text-decoration:none;transition:color .25s;">O nás</a>
+    <a href="#piliere" data-cursor="hover" style="font-family:var(--fm);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);text-decoration:none;transition:color .25s;">Služby</a>
+    <a href="#mesta" data-cursor="hover" style="font-family:var(--fm);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);text-decoration:none;transition:color .25s;">Mestá</a>
+    <a href="#founder" data-cursor="hover" style="font-family:var(--fm);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);text-decoration:none;transition:color .25s;">Zakladateľ</a>
+    <a href="#kontakt" data-cursor="hover" style="font-family:var(--fm);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);text-decoration:none;transition:color .25s;">Kontakt</a>
+    <a href="https://medireadysk.github.io/guide/" target="_blank" rel="noopener" class="mr-mat" data-cursor="hover" style="display:inline-flex;align-items:center;gap:9px;white-space:nowrap;font-family:var(--fm);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--white);text-decoration:none;border:1px solid rgba(251,247,239,.16);border-radius:100px;padding:8px 13px 8px 11px;position:relative;transition:background .3s,border-color .3s;">
+      <span class="mr-mat-ico" style="display:inline-flex;transition:transform .4s cubic-bezier(.16,1,.3,1);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path class="mr-pg" style="transition:transform .4s cubic-bezier(.16,1,.3,1);" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </span>
+      Naše materiály
+      <span style="display:inline-flex;align-items:center;gap:4px;background:#d21f10;color:#fff;font-family:var(--fm);font-size:9px;font-weight:500;letter-spacing:.08em;border-radius:100px;padding:3px 8px;animation:mr-badge-pulse 2.4s ease-out infinite;"><span style="width:4px;height:4px;border-radius:50%;background:#fff;animation:mr-badge-dot 1.4s ease-in-out infinite;"></span>Nové!</span>
+    </a>
+  </div>
+  <a href="#join" data-cursor="hover" data-magnetic style="font-family:var(--fd);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);background:var(--white);padding:12px 24px;border-radius:100px;text-decoration:none;font-weight:600;white-space:nowrap;transition:transform .25s,box-shadow .35s;display:inline-block;">Pridaj sa →</a>
+</nav>
+
+<main style="position:relative;z-index:2;">
+
+<section id="hero" style="position:relative;width:100%;min-height:100vh;background:#0a0302;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px;">
+
+  <canvas id="heroSphere" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 54% 48% at 50% 47%,rgba(12,2,1,.5) 0%,rgba(12,2,1,.16) 46%,transparent 72%);z-index:1;pointer-events:none;"></div>
+  <div data-par="0.07" style="position:absolute;top:-22%;left:14%;width:640px;height:640px;background:radial-gradient(circle,rgba(180,22,8,.5) 0%,transparent 66%);filter:blur(120px);mix-blend-mode:screen;z-index:2;pointer-events:none;will-change:transform;"></div>
+  <div data-par="0.05" style="position:absolute;bottom:-16%;right:12%;width:540px;height:540px;background:radial-gradient(circle,rgba(145,16,7,.42) 0%,transparent 66%);filter:blur(120px);mix-blend-mode:screen;z-index:2;pointer-events:none;will-change:transform;"></div>
+
+  <div id="heroContent" style="position:relative;z-index:10;max-width:940px;width:100%;display:flex;flex-direction:column;align-items:center;gap:20px;transition:transform .55s cubic-bezier(.16,1,.3,1);">
+
+    <div data-par="-0.012" style="display:inline-flex;align-items:center;gap:11px;height:40px;padding:0 16px 0 7px;background:rgba(90,14,9,.42);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(220,150,142,.42);border-radius:11px;will-change:transform;">
+      <span style="font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:12px;letter-spacing:.02em;color:#fff;background:#b41608;border-radius:7px;padding:5px 10px;">Nové</span>
+      <span style="font-family:'Instrument Sans',sans-serif;font-weight:500;font-size:14px;color:rgba(255,255,255,.92);">Nábor 2026 je otvorený</span>
+    </div>
+
+    <h1 data-par="-0.022" style="font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(2.6rem,6.4vw,5.4rem);line-height:1.07;letter-spacing:-.02em;margin:0;color:#fff;will-change:transform;">Generácia<br/><span style="font-style:italic;background:linear-gradient(to bottom,#ffd9d2,#e8635a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">pripravených</span><br/>lekárov.</h1>
+
+    <p style="font-family:'Instrument Sans',sans-serif;font-size:clamp(.98rem,1.8vw,1.16rem);line-height:1.68;color:rgba(255,255,255,.96);max-width:500px;margin:0;">MediReady — zdravotné zabezpečenie podujatí. Reálna prax pre medikov, ešte počas štúdia.</p>
+
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px;margin-top:16px;">
+      <a href="#" data-open-form data-cursor="hover" data-magnetic style="display:inline-flex;align-items:center;gap:10px;font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:1rem;color:#fff;background:#b41608;padding:15px 28px;border-radius:11px;text-decoration:none;box-shadow:0 12px 32px rgba(180,22,8,.4);transition:background .25s,transform .25s,box-shadow .35s;">
+        Pridaj sa do tímu
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a href="#kontakt" data-cursor="hover" data-magnetic style="display:inline-flex;align-items:center;gap:10px;font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:1rem;color:rgba(255,255,255,.92);background:rgba(43,18,15,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.16);padding:15px 28px;border-radius:11px;text-decoration:none;transition:background .25s,transform .25s,border-color .25s;">Zabezpečenie podujatia</a>
+    </div>
+
+
+
+  </div>
+
+</section>
+
+<section style="background:var(--ink);overflow:hidden;padding:26px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div style="display:flex;width:max-content;animation:mr-marquee 28s linear infinite;will-change:transform;">
+    <div style="display:flex;align-items:center;gap:46px;padding-right:46px;">
+      <span style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,2.9vw,2.5rem);letter-spacing:-.01em;color:var(--cream);white-space:nowrap;">Reálna prax</span>
+      <span style="width:9px;height:9px;background:var(--red-bright);border-radius:50%;flex-shrink:0;"></span>
+      <span style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,2.9vw,2.5rem);letter-spacing:-.01em;color:transparent;-webkit-text-stroke:1px var(--cream);white-space:nowrap;">Záchranná služba</span>
+      <span style="width:9px;height:9px;background:var(--red-bright);border-radius:50%;flex-shrink:0;"></span>
+      <span style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,2.9vw,2.5rem);letter-spacing:-.01em;color:var(--cream);white-space:nowrap;">Športové podujatia</span>
+      <span style="width:9px;height:9px;background:var(--red-bright);border-radius:50%;flex-shrink:0;"></span>
+      <span style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,2.9vw,2.5rem);letter-spacing:-.01em;color:transparent;-webkit-text-stroke:1px var(--cream);white-space:nowrap;">Medici v teréne</span>
+      <span style="width:9px;height:9px;background:var(--red-bright);border-radius:50%;flex-shrink:0;"></span>
+      <span style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,2.9vw,2.5rem);letter-spacing:-.01em;color:var(--cream);white-space:nowrap;">Pod dohľadom</span>
+      <span style="width:9px;height:9px;background:var(--red-bright);border-radius:50%;flex-shrink:0;"></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:46px;padding-right:46px;" aria-hidden="true">
+      <span style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,2.9vw,2.5rem);letter-spacing:-.01em;color:var(--cream);white-space:nowrap;">Reálna prax</span>
+      <span style="width:9px;height:9px;background:var(--red-bright);border-radius:50%;flex-shrink:0;"></span>
+      <span style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,2.9vw,2.5rem);letter-spacing:-.01em;color:transparent;-webkit-text-stroke:1px var(--cream);white-space:nowrap;">Záchranná služba</span>
+      <span style="width:9px;height:9px;background:var(--red-bright);border-radius:50%;flex-shrink:0;"></span>
+      <span style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,2.9vw,2.5rem);letter-spacing:-.01em;color:var(--cream);white-space:nowrap;">Športové podujatia</span>
+      <span style="width:9px;height:9px;background:var(--red-bright);border-radius:50%;flex-shrink:0;"></span>
+      <span style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,2.9vw,2.5rem);letter-spacing:-.01em;color:transparent;-webkit-text-stroke:1px var(--cream);white-space:nowrap;">Medici v teréne</span>
+      <span style="width:9px;height:9px;background:var(--red-bright);border-radius:50%;flex-shrink:0;"></span>
+      <span style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,2.9vw,2.5rem);letter-spacing:-.01em;color:var(--cream);white-space:nowrap;">Pod dohľadom</span>
+      <span style="width:9px;height:9px;background:var(--red-bright);border-radius:50%;flex-shrink:0;"></span>
+    </div>
+  </div>
+</section>
+
+<section id="pristup" style="background:var(--cream);color:var(--ink);padding:clamp(80px,10vw,130px) 44px clamp(80px,10vw,120px);">
+  <div style="max-width:1280px;margin:0 auto;position:relative;">
+
+    <!-- header row -->
+    <div data-collapse style="position:relative;z-index:1;display:grid;grid-template-columns:1.7fr 1.3fr;gap:clamp(30px,5vw,70px);align-items:end;padding-bottom:clamp(30px,3.6vw,46px);border-bottom:1px solid rgba(42,35,32,.12);">
+      <div data-reveal style="display:flex;flex-direction:column;gap:22px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-family:var(--fm);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);">01 — O nás</span>
+          <span style="width:34px;height:1px;background:var(--red);"></span>
+        </div>
+        <h2 style="font-family:var(--fd);font-weight:800;font-size:clamp(2rem,4.6vw,3.7rem);line-height:1.02;letter-spacing:-.035em;color:var(--ink);margin:0;text-wrap:balance;">Reálna prax, ktorú <span style="color:var(--red);">fakulta nedá.</span></h2>
+      </div>
+      <p data-reveal data-reveal-delay="120" style="font-family:var(--fb);font-size:.98rem;line-height:1.62;color:var(--ink-mut);margin:0 0 6px;">Poskytujeme profesionálne zdravotné krytie na podujatiach — a zároveň dávame medikom príležitosť, ktorú žiadna učebnica nedokáže nahradiť.</p>
+    </div>
+
+    <!-- cards row -->
+    <div data-collapse style="position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,26px);padding:clamp(26px,3.2vw,42px) 0;">
+      <article data-reveal data-cursor="hover" data-mr-pcard style="background:#fff;border-radius:16px;padding:clamp(26px,2.6vw,38px);display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(42,35,32,.04),0 18px 44px rgba(42,35,32,.06);transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s;">
+        <div style="height:150px;display:flex;align-items:center;justify-content:center;margin-bottom:30px;"><img src="assets/icon-pulse.svg" alt="" data-mr-picon style="width:150px;height:150px;transition:transform .6s cubic-bezier(.16,1,.3,1);"/></div>
+        <h3 style="font-family:var(--fd);font-weight:700;font-size:1.22rem;letter-spacing:-.01em;color:var(--ink);margin:0 0 12px;">Reálne situácie</h3>
+        <p style="font-family:var(--fb);font-size:.92rem;line-height:1.62;color:var(--ink-mut);margin:0 0 22px;">Skutočné zásahy na futbalových, atletických a kultúrnych podujatiach — žiadna simulácia, len terén.</p>
+        <a href="#piliere" data-cursor="hover" style="display:inline-flex;align-items:center;gap:7px;font-family:var(--fb);font-weight:600;font-size:.86rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:2px;align-self:flex-start;transition:gap .25s,color .25s,border-color .25s;">Viac o praxi
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </article>
+
+      <article data-reveal data-reveal-delay="100" data-cursor="hover" data-mr-pcard style="background:#fff;border-radius:16px;padding:clamp(26px,2.6vw,38px);display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(42,35,32,.04),0 18px 44px rgba(42,35,32,.06);transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s;">
+        <div style="height:150px;display:flex;align-items:center;justify-content:center;margin-bottom:30px;"><img src="assets/icon-coil.svg" alt="" data-mr-picon style="width:150px;height:150px;transition:transform .6s cubic-bezier(.16,1,.3,1);"/></div>
+        <h3 style="font-family:var(--fd);font-weight:700;font-size:1.22rem;letter-spacing:-.01em;color:var(--ink);margin:0 0 12px;">Skúsený tím</h3>
+        <p style="font-family:var(--fb);font-size:.92rem;line-height:1.62;color:var(--ink-mut);margin:0 0 22px;">Profesionáli dohliadajú na každý zásah priamo v teréne — učíš sa pod vedením tých najlepších.</p>
+        <a href="#join" data-cursor="hover" style="display:inline-flex;align-items:center;gap:7px;font-family:var(--fb);font-weight:600;font-size:.86rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:2px;align-self:flex-start;transition:gap .25s,color .25s,border-color .25s;">Spoznaj tím
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </article>
+
+      <article data-reveal data-reveal-delay="200" data-cursor="hover" data-mr-pcard style="background:#fff;border-radius:16px;padding:clamp(26px,2.6vw,38px);display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(42,35,32,.04),0 18px 44px rgba(42,35,32,.06);transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s;">
+        <div style="height:150px;display:flex;align-items:center;justify-content:center;margin-bottom:30px;"><img src="assets/icon-network.svg" alt="" data-mr-picon style="width:150px;height:150px;transition:transform .6s cubic-bezier(.16,1,.3,1);"/></div>
+        <h3 style="font-family:var(--fd);font-weight:700;font-size:1.22rem;letter-spacing:-.01em;color:var(--ink);margin:0 0 12px;">Komunita medikov</h3>
+        <p style="font-family:var(--fb);font-size:.92rem;line-height:1.62;color:var(--ink-mut);margin:0 0 22px;">Motivovaní ľudia z troch slovenských miest, ktorí chcú konať — nie len sa učiť z učebníc.</p>
+        <a href="#mesta" data-cursor="hover" style="display:inline-flex;align-items:center;gap:7px;font-family:var(--fb);font-weight:600;font-size:.86rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:2px;align-self:flex-start;transition:gap .25s,color .25s,border-color .25s;">Naše mestá
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </article>
+    </div>
+
+    <!-- footer support row -->
+    <div data-collapse style="position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,26px);padding-top:clamp(26px,3.2vw,42px);border-top:1px solid rgba(42,35,32,.12);">
+      <p data-reveal style="font-family:var(--fb);font-size:.86rem;line-height:1.62;color:rgba(42,35,32,.5);margin:0;">Zabezpečujeme stovky podujatí naprieč Slovenskom — a budujeme novú generáciu pripravených lekárov.</p>
+      <div></div>
+      <p data-reveal data-reveal-delay="120" style="font-family:var(--fb);font-size:.86rem;line-height:1.62;color:rgba(42,35,32,.5);margin:0;">Každý člen prechádza reálnou prípravou v teréne pod dohľadom skúsených profesionálov záchrannej služby.</p>
+    </div>
+
+  </div>
+
+</section>
+
+<section id="mrReveal" style="position:relative;background:var(--ink);height:340vh;border-top:1px solid var(--line);">
+  <div style="position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 50% 54%,rgba(145,16,7,.5) 0%,rgba(145,16,7,0) 60%);pointer-events:none;"></div>
+
+<div id="mrStage" style="position:absolute;inset:0;width:100%;height:100%;will-change:transform;">
+      <video id="mrVideo" src="assets/bg.mp4" muted playsinline preload="auto" poster="assets/hero-kit.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,3,2,.5) 0%,rgba(10,3,2,.22) 45%,rgba(10,3,2,.55) 100%);pointer-events:none;z-index:1;"></div>
+    </div>
+
+    <div style="position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;pointer-events:none;text-align:center;">
+      <div data-line="0" style="position:absolute;opacity:0;transition:opacity .55s cubic-bezier(.16,1,.3,1);max-width:1000px;padding:0 40px;">
+        <p style="font-family:var(--fd);font-weight:900;font-size:clamp(2.6rem,7vw,5.6rem);line-height:.96;letter-spacing:-.03em;color:#fff;margin:0;text-shadow:0 6px 50px rgba(0,0,0,.6),0 0 90px rgba(210,31,16,.45);">Každý zásah<br/>je lekcia.</p>
+      </div>
+      <div data-line="1" style="position:absolute;opacity:0;transition:opacity .55s cubic-bezier(.16,1,.3,1);max-width:1000px;padding:0 40px;">
+        <p style="font-family:var(--fd);font-weight:900;font-size:clamp(2.6rem,7vw,5.6rem);line-height:.96;letter-spacing:-.03em;color:#fff;margin:0;text-shadow:0 6px 50px rgba(0,0,0,.6),0 0 90px rgba(210,31,16,.45);">Nie simulácia.<br/>Skutočné situácie.</p>
+      </div>
+      <div data-line="2" style="position:absolute;opacity:0;transition:opacity .55s cubic-bezier(.16,1,.3,1);max-width:1000px;padding:0 40px;">
+        <p style="font-family:var(--fd);font-weight:900;font-size:clamp(2.6rem,7vw,5.6rem);line-height:.96;letter-spacing:-.03em;color:#fff;margin:0;text-shadow:0 6px 50px rgba(0,0,0,.6),0 0 90px rgba(210,31,16,.45);">Pod dohľadom.<br/>V teréne. Živé.</p>
+      </div>
+    </div>
+
+    <div style="position:absolute;bottom:34px;left:44px;right:44px;display:flex;align-items:center;gap:16px;z-index:5;">
+      <span style="font-family:var(--fm);font-size:10px;letter-spacing:.16em;color:var(--mut-2);">ROZLOŽENIE</span>
+      <div style="flex:1;height:1px;background:var(--line);position:relative;overflow:hidden;">
+        <div id="mrProg" style="position:absolute;inset:0;background:var(--red-bright);transform:scaleX(0);transform-origin:left;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="position:relative;overflow:hidden;background:var(--red);padding:clamp(80px,10vw,120px) 44px;border-top:1px solid var(--line);">
+  <div style="position:absolute;top:0;right:0;width:480px;height:480px;pointer-events:none;z-index:0;opacity:.12;">
+    <svg viewBox="0 0 480 480" fill="none" style="width:100%;height:100%;">
+      <circle cx="480" cy="0" r="220" stroke="white" stroke-width="1"/>
+      <circle cx="480" cy="0" r="300" stroke="white" stroke-width=".6" stroke-dasharray="4 10"/>
+      <circle cx="480" cy="0" r="390" stroke="white" stroke-width=".4" opacity=".7"/>
+      <line x1="280" y1="0" x2="480" y2="200" stroke="white" stroke-width=".6" opacity=".5"/>
+    </svg>
+  </div>
+  <div style="position:absolute;bottom:-20px;left:30px;font-family:var(--fd);font-weight:900;font-size:clamp(14rem,24vw,22rem);line-height:1;color:white;opacity:.035;pointer-events:none;z-index:0;letter-spacing:-.06em;user-select:none;">200</div>
+  <div style="max-width:1280px;margin:0 auto;">
+    <div data-reveal style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:20px;margin-bottom:64px;">
+      <h2 style="font-family:var(--fd);font-weight:800;font-size:clamp(1.9rem,4vw,3.4rem);line-height:.98;letter-spacing:-.03em;color:var(--white);margin:0;max-width:14ch;">Čísla, ktoré hovoria za nás.</h2>
+      <span style="font-family:var(--fm);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--white);opacity:.6;">MediReady</span>
+    </div>
+    <div data-collapse-2 style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);">
+      <div data-reveal style="background:var(--red);padding:38px 30px;display:flex;flex-direction:column;gap:12px;">
+        <span style="font-family:var(--fd);font-weight:900;font-size:clamp(2.8rem,5vw,4.4rem);line-height:1;letter-spacing:-.04em;color:var(--white);"><span data-count="200">0</span>+</span>
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--white);opacity:.65;">Zabezpečených podujatí</span>
+      </div>
+      <div data-reveal data-reveal-delay="80" style="background:var(--red);padding:38px 30px;display:flex;flex-direction:column;gap:12px;">
+        <span style="font-family:var(--fd);font-weight:900;font-size:clamp(2.8rem,5vw,4.4rem);line-height:1;letter-spacing:-.04em;color:var(--white);"><span data-count="50">0</span>+</span>
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--white);opacity:.65;">Aktívnych medikov</span>
+      </div>
+      <div data-reveal data-reveal-delay="160" style="background:var(--red);padding:38px 30px;display:flex;flex-direction:column;gap:12px;">
+        <span style="font-family:var(--fd);font-weight:900;font-size:clamp(2.8rem,5vw,4.4rem);line-height:1;letter-spacing:-.04em;color:var(--white);"><span data-count="3">0</span></span>
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--white);opacity:.65;">Mestá pôsobenia</span>
+      </div>
+      <div data-reveal data-reveal-delay="240" style="background:var(--red);padding:38px 30px;display:flex;flex-direction:column;gap:12px;">
+        <span style="font-family:var(--fd);font-weight:900;font-size:clamp(2.8rem,5vw,4.4rem);line-height:1;letter-spacing:-.04em;color:var(--white);"><span data-count="4.9">0</span> ★</span>
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--white);opacity:.65;">Hodnotenie organizátorov</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="piliere" style="background-color:#0a0504;background-size:40px 40px;background-image:linear-gradient(45deg,rgba(199,30,16,.4),transparent 40%),linear-gradient(-90deg,rgba(199,30,16,.4),transparent 20%);padding:clamp(90px,11vw,140px) 44px;border-top:1px solid var(--line);">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div data-reveal style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:24px;margin-bottom:64px;">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+          <span style="width:30px;height:1px;background:var(--red-bright);"></span>
+          <span style="font-family:var(--fm);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--red-bright);">03 — Služby</span>
+        </div>
+        <h2 style="font-family:var(--fd);font-weight:800;font-size:clamp(2rem,4.4vw,3.6rem);line-height:.98;letter-spacing:-.03em;color:var(--white);margin:0;max-width:13ch;">Tri piliere MediReady.</h2>
+      </div>
+      <p style="font-family:var(--fb);font-size:.98rem;line-height:1.65;color:var(--mut);margin:0;max-width:330px;">Od profesionálneho zabezpečenia podujatí až po reálnu prax pre nastupujúcich lekárov.</p>
+    </div>
+    <div data-collapse style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+      <article data-reveal data-cursor="hover" data-mr-card style="background:var(--ink-2);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .4s;">
+        <div style="overflow:hidden;aspect-ratio:4/3;"><img src="assets/service-event-coverage.png" alt="" data-mr-img style="width:100%;height:100%;object-fit:cover;filter:grayscale(35%);transition:transform .7s cubic-bezier(.16,1,.3,1),filter .5s;"/></div>
+        <div style="padding:30px;display:flex;flex-direction:column;gap:12px;">
+          <span style="font-family:var(--fm);font-size:11px;letter-spacing:.16em;color:var(--red-bright);">01</span>
+          <h3 style="font-family:var(--fd);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;color:var(--white);margin:0;">Zdravotné zabezpečenie</h3>
+          <p style="font-family:var(--fb);font-size:.92rem;line-height:1.65;color:var(--mut);margin:0;">Profesionálne krytie na futbalových, atletických a kultúrnych podujatiach po celom Slovensku.</p>
+        </div>
+      </article>
+      <article data-reveal data-reveal-delay="100" data-cursor="hover" data-mr-card style="background:var(--ink-2);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .4s;">
+        <div style="overflow:hidden;aspect-ratio:4/3;"><img src="assets/service-education.png" alt="" data-mr-img style="width:100%;height:100%;object-fit:cover;filter:grayscale(35%);transition:transform .7s cubic-bezier(.16,1,.3,1),filter .5s;"/></div>
+        <div style="padding:30px;display:flex;flex-direction:column;gap:12px;">
+          <span style="font-family:var(--fm);font-size:11px;letter-spacing:.16em;color:var(--red-bright);">02</span>
+          <h3 style="font-family:var(--fd);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;color:var(--white);margin:0;">Vzdelávací program</h3>
+          <p style="font-family:var(--fb);font-size:.92rem;line-height:1.65;color:var(--mut);margin:0;">Reálna klinická prax počas štúdia — pod dohľadom skúseného tímu, nie len z učebnice.</p>
+        </div>
+      </article>
+      <article data-reveal data-reveal-delay="200" data-cursor="hover" data-mr-card style="background:var(--ink-2);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .4s;">
+        <div style="overflow:hidden;aspect-ratio:4/3;"><img src="assets/service-community.png" alt="" data-mr-img style="width:100%;height:100%;object-fit:cover;filter:grayscale(35%);transition:transform .7s cubic-bezier(.16,1,.3,1),filter .5s;"/></div>
+        <div style="padding:30px;display:flex;flex-direction:column;gap:12px;">
+          <span style="font-family:var(--fm);font-size:11px;letter-spacing:.16em;color:var(--red-bright);">03</span>
+          <h3 style="font-family:var(--fd);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;color:var(--white);margin:0;">Komunita medikov</h3>
+          <p style="font-family:var(--fb);font-size:.92rem;line-height:1.65;color:var(--mut);margin:0;">Tím rovnako motivovaných ľudí z troch miest, ktorí chcú konať — nie len sa učiť.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="mesta" style="position:relative;overflow:hidden;background:var(--red);padding:clamp(90px,11vw,140px) 44px;border-top:1px solid var(--line);">
+  <div style="position:absolute;top:0;right:0;width:480px;height:480px;pointer-events:none;z-index:0;opacity:.1;">
+    <svg viewBox="0 0 480 480" fill="none" style="width:100%;height:100%;">
+      <circle cx="480" cy="0" r="220" stroke="white" stroke-width="1"/>
+      <circle cx="480" cy="0" r="300" stroke="white" stroke-width=".6" stroke-dasharray="4 10"/>
+      <circle cx="480" cy="0" r="390" stroke="white" stroke-width=".4" opacity=".7"/>
+    </svg>
+  </div>
+  <div data-collapse style="position:relative;z-index:2;max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,90px);align-items:center;">
+    <div data-reveal>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+        <span style="width:30px;height:1px;background:var(--white);opacity:.6;"></span>
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--white);opacity:.8;">04 — Kde pôsobíme</span>
+      </div>
+      <h2 style="font-family:var(--fd);font-weight:800;font-size:clamp(2.4rem,5.4vw,4.6rem);line-height:.96;letter-spacing:-.035em;color:var(--white);margin:0 0 24px;">Tri mestá.<br/>Jeden tím.</h2>
+      <p style="font-family:var(--fb);font-size:1rem;line-height:1.65;color:var(--white);opacity:.78;margin:0 0 34px;max-width:380px;">MediReady pokrýva podujatia v troch najväčších slovenských mestách — s lokálne zakorenenými tímami pripravenými zasiahnuť.</p>
+      <div style="display:flex;flex-direction:column;border-top:1px solid var(--line);max-width:420px;">
+        <div data-cursor="hover" data-mr-city style="display:flex;align-items:center;justify-content:space-between;padding:22px 4px;border-bottom:1px solid var(--line);transition:padding-left .4s cubic-bezier(.16,1,.3,1);">
+          <span data-mr-cityname style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,3.2vw,2.4rem);letter-spacing:-.03em;color:transparent;-webkit-text-stroke:1.2px var(--white);transition:color .35s,-webkit-text-stroke .35s;">Bratislava</span>
+          <span style="font-family:var(--fm);font-size:11px;letter-spacing:.14em;color:var(--white);opacity:.55;">48.15°N — 01</span>
+        </div>
+        <div data-cursor="hover" data-mr-city style="display:flex;align-items:center;justify-content:space-between;padding:22px 4px;border-bottom:1px solid var(--line);transition:padding-left .4s cubic-bezier(.16,1,.3,1);">
+          <span data-mr-cityname style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,3.2vw,2.4rem);letter-spacing:-.03em;color:transparent;-webkit-text-stroke:1.2px var(--white);transition:color .35s,-webkit-text-stroke .35s;">Martin</span>
+          <span style="font-family:var(--fm);font-size:11px;letter-spacing:.14em;color:var(--white);opacity:.55;">49.07°N — 02</span>
+        </div>
+        <div data-cursor="hover" data-mr-city style="display:flex;align-items:center;justify-content:space-between;padding:22px 4px;border-bottom:1px solid var(--line);transition:padding-left .4s cubic-bezier(.16,1,.3,1);">
+          <span data-mr-cityname style="font-family:var(--fd);font-weight:800;font-size:clamp(1.5rem,3.2vw,2.4rem);letter-spacing:-.03em;color:transparent;-webkit-text-stroke:1.2px var(--white);transition:color .35s,-webkit-text-stroke .35s;">Košice</span>
+          <span style="font-family:var(--fm);font-size:11px;letter-spacing:.14em;color:var(--white);opacity:.55;">48.72°N — 03</span>
+        </div>
+      </div>
+    </div>
+    <div data-reveal style="display:flex;align-items:center;justify-content:center;min-height:520px;">
+      <div class="mr-c3d">
+        <div><img src="assets/bratislava.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"/><span style="position:absolute;bottom:9px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 5px #000;">Bratislava</span></div>
+        <div><img src="assets/martin.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"/><span style="position:absolute;bottom:9px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 5px #000;">Martin</span></div>
+        <div><img src="assets/kosice.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"/><span style="position:absolute;bottom:9px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 5px #000;">Košice</span></div>
+        <div><img src="assets/bratislava.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"/><span style="position:absolute;bottom:9px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 5px #000;">Bratislava</span></div>
+        <div><img src="assets/martin.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"/><span style="position:absolute;bottom:9px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 5px #000;">Martin</span></div>
+        <div><img src="assets/kosice.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"/><span style="position:absolute;bottom:9px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 5px #000;">Košice</span></div>
+        <div><img src="assets/bratislava.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"/><span style="position:absolute;bottom:9px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 5px #000;">Bratislava</span></div>
+        <div><img src="assets/martin.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"/><span style="position:absolute;bottom:9px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 5px #000;">Martin</span></div>
+        <div><img src="assets/kosice.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"/><span style="position:absolute;bottom:9px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 5px #000;">Košice</span></div>
+        <div><img src="assets/bratislava.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"/><span style="position:absolute;bottom:9px;left:0;right:0;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 5px #000;">Bratislava</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="founder" style="position:relative;background:#0a0302;padding:clamp(90px,11vw,150px) 44px;border-top:1px solid var(--line);overflow:hidden;">
+  <div data-par2="0.04" style="position:absolute;top:-12%;left:-6%;width:560px;height:560px;background:radial-gradient(circle,rgba(180,22,8,.34) 0%,transparent 66%);filter:blur(120px);pointer-events:none;z-index:0;"></div>
+  <div data-collapse style="position:relative;z-index:2;max-width:1240px;margin:0 auto;display:grid;grid-template-columns:.92fr 1.08fr;gap:clamp(40px,5.5vw,84px);align-items:center;">
+
+    <div data-reveal class="mr-founder-fig" style="position:relative;border-radius:20px;overflow:hidden;border:1px solid rgba(251,247,239,.12);box-shadow:0 40px 90px rgba(0,0,0,.5);background:#000;">
+      <img src="assets/founder.jpeg" alt="Dominik Gašparík" class="mr-founder-img" style="width:100%;height:clamp(420px,52vw,560px);object-fit:cover;object-position:center 22%;display:block;transition:transform .7s cubic-bezier(.16,1,.3,1);"/>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,3,2,.92) 0%,rgba(10,3,2,.3) 32%,transparent 58%);pointer-events:none;"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;padding:26px 28px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;">
+        <div>
+          <div style="font-family:var(--fd);font-weight:800;font-size:clamp(1.4rem,2.4vw,1.9rem);letter-spacing:-.02em;color:#fff;line-height:1;">Dominik Gašparík</div>
+          <div style="font-family:var(--fm);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--red-bright);margin-top:9px;">CEO &amp; zakladateľ</div>
+        </div>
+        <span style="font-family:var(--fm);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.5);white-space:nowrap;">MediReady</span>
+      </div>
+    </div>
+
+    <div>
+      <div data-reveal style="display:flex;align-items:center;gap:12px;margin-bottom:22px;">
+        <span style="width:30px;height:1px;background:var(--red-bright);"></span>
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--red-bright);">05 — Zakladateľ</span>
+      </div>
+      <h2 data-reveal data-reveal-delay="80" style="font-family:var(--fd);font-weight:900;font-size:clamp(2.2rem,5vw,3.9rem);line-height:.98;letter-spacing:-.035em;color:var(--white);margin:0 0 14px;">Človek za<br/>projektom.</h2>
+      <p data-reveal data-reveal-delay="140" style="font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(1.2rem,1.9vw,1.6rem);line-height:1.35;color:rgba(251,247,239,.9);margin:0 0 30px;max-width:30ch;">„Najlepšia príprava lekára sa odohráva v teréne — nie len v posluchárni.“</p>
+      <div data-reveal data-reveal-delay="200" style="display:flex;flex-direction:column;gap:16px;max-width:540px;">
+        <p style="font-family:var(--fb);font-size:1rem;line-height:1.7;color:var(--mut);margin:0;">Dominik je <strong style="color:#fff;font-weight:600;">študentom Lekárskej fakulty UK v Bratislave</strong>. Má rád športovú medicínu a celý projekt MediReady založil preto, aby pomáhal medikom získavať reálne skúsenosti a zdokonaľovať sa v praktickej časti medicíny.</p>
+        <p style="font-family:var(--fb);font-size:1rem;line-height:1.7;color:var(--mut);margin:0;">Pod jeho vedením dnes desiatky medikov z troch slovenských miest zasahujú na reálnych podujatiach pod dohľadom skúsených profesionálov — a rastú do podoby sebavedomých zdravotníkov pripravených pomáhať.</p>
+      </div>
+      <div data-reveal data-reveal-delay="260" style="display:flex;flex-wrap:wrap;gap:9px;margin-top:32px;">
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);opacity:.72;border:1px solid var(--line);border-radius:100px;padding:8px 15px;">Študent LF UK Bratislava</span>
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);opacity:.72;border:1px solid var(--line);border-radius:100px;padding:8px 15px;">Športová medicína</span>
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);opacity:.72;border:1px solid var(--line);border-radius:100px;padding:8px 15px;">Záchranná služba</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="join" style="position:relative;background:var(--ink);padding:clamp(100px,13vw,170px) 44px;border-top:1px solid var(--line);overflow:hidden;">
+  <div style="position:absolute;inset:0;z-index:0;"><img src="assets/medics-detail.png" alt="" style="width:100%;height:100%;object-fit:cover;opacity:.62;"/></div>
+  <div style="position:absolute;inset:0;z-index:1;background:linear-gradient(105deg,rgba(19,15,13,.75) 20%,rgba(19,15,13,.28) 60%,rgba(19,15,13,.08) 100%);"></div>
+  <div style="position:relative;z-index:2;max-width:1280px;margin:0 auto;">
+    <div data-reveal style="display:flex;align-items:center;gap:12px;margin-bottom:22px;">
+      <span style="width:30px;height:1px;background:var(--red-bright);"></span>
+      <span style="font-family:var(--fm);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--red-bright);">06 — Pre medikov</span>
+    </div>
+    <h2 data-reveal data-reveal-delay="80" style="font-family:var(--fd);font-weight:900;font-size:clamp(2.8rem,7.5vw,6.6rem);line-height:.92;letter-spacing:-.04em;color:var(--white);margin:0 0 30px;max-width:14ch;text-wrap:balance;">Nečakaj len<br/>na <span style="-webkit-text-stroke:1.6px var(--white);color:transparent;">diplom.</span></h2>
+    <p data-reveal data-reveal-delay="160" style="font-family:var(--fb);font-size:1.1rem;line-height:1.65;color:var(--mut);margin:0 0 44px;max-width:520px;">Hľadáme medikov, ktorí chcú konať — nie len sa učiť. Pridaj sa k tímu, ktorý ti dá reálnu prax ešte počas štúdia.</p>
+    <div data-reveal data-reveal-delay="240" style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;">
+      <a href="#" data-open-form data-cursor="hover" data-magnetic style="display:inline-flex;align-items:center;gap:10px;font-family:var(--fd);font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--ink);background:var(--white);padding:19px 38px;border-radius:100px;text-decoration:none;transition:transform .25s,box-shadow .4s;">Prihlásiť sa do tímu →</a>
+      <a href="https://www.instagram.com/medireadysk" target="_blank" rel="noopener" class="mr-ig" data-cursor="hover" aria-label="Instagram">
+        <span class="mr-ig-svg"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.17.42.37 1.06.42 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.42 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.17-1.06.37-2.23.42-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.42-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.17-.42-.37-1.06-.42-2.23C2.21 15.58 2.2 15.2 2.2 12s.01-3.58.07-4.85c.05-1.17.25-1.8.42-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.17 1.06-.37 2.23-.42C8.42 2.21 8.8 2.2 12 2.2zm0 1.95c-3.14 0-3.51.01-4.75.07-.9.04-1.39.2-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.12.32-.28.81-.32 1.71-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.04.9.2 1.39.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.12.81.28 1.71.32 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.9-.04 1.39-.2 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.12-.32.28-.81.32-1.71.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.04-.9-.2-1.39-.32-1.71-.17-.43-.37-.74-.69-1.06-.32-.32-.63-.52-1.06-.69-.32-.12-.81-.28-1.71-.32-1.24-.06-1.61-.07-4.75-.07zm0 3.32a4.53 4.53 0 1 1 0 9.06 4.53 4.53 0 0 1 0-9.06zm0 1.95a2.58 2.58 0 1 0 0 5.16 2.58 2.58 0 0 0 0-5.16zm5.77-2.16a1.06 1.06 0 1 1-2.12 0 1.06 1.06 0 0 1 2.12 0z"/></svg></span>
+        <span class="mr-ig-text">@medireadysk</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt" style="background:var(--red);padding:clamp(90px,11vw,140px) 44px;border-top:1px solid var(--line);">
+  <div data-collapse style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:clamp(48px,7vw,100px);align-items:start;">
+    <div data-reveal>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+        <span style="width:30px;height:1px;background:var(--white);opacity:.6;"></span>
+        <span style="font-family:var(--fm);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--white);opacity:.8;">07 — Pre organizátorov</span>
+      </div>
+      <h2 style="font-family:var(--fd);font-weight:800;font-size:clamp(2.2rem,5vw,4rem);line-height:.98;letter-spacing:-.035em;color:var(--white);margin:0 0 22px;">Zabezpečte<br/>vaše podujatie.</h2>
+      <p style="font-family:var(--fb);font-size:1rem;line-height:1.65;color:var(--white);opacity:.78;margin:0 0 40px;max-width:400px;">Organizujete športové alebo kultúrne podujatie? Napíšte nám — radi sa dohodneme na profesionálnom zdravotnom krytí.</p>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;align-items:center;gap:12px;font-family:var(--fm);font-size:12px;letter-spacing:.06em;color:var(--white);opacity:.85;"><span style="width:6px;height:6px;background:var(--white);border-radius:50%;"></span>info@mediready.sk</div>
+        <div style="display:flex;align-items:center;gap:12px;font-family:var(--fm);font-size:12px;letter-spacing:.06em;color:var(--white);opacity:.85;"><span style="width:6px;height:6px;background:var(--white);border-radius:50%;"></span>Žižkova 1, Bratislava 811 02</div>
+        <div style="display:flex;align-items:center;gap:12px;font-family:var(--fm);font-size:12px;letter-spacing:.06em;color:var(--white);opacity:.85;"><span style="width:6px;height:6px;background:var(--white);border-radius:50%;"></span>@medireadysk</div>
+      </div>
+    </div>
+    <form id="mrForm" data-reveal data-reveal-delay="120" style="display:flex;flex-direction:column;border-top:1px solid var(--line);">
+      <div style="display:flex;flex-direction:column;border-bottom:1px solid var(--line);">
+        <label for="mr-name" style="font-family:var(--fm);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--white);opacity:.55;padding:18px 0 4px;">Meno a priezvisko</label>
+        <input id="mr-name" name="name" type="text" placeholder="Ján Novák" required data-cursor="hover" style="background:transparent;border:none;outline:none;color:var(--white);font-family:var(--fb);font-size:1rem;padding:2px 0 16px;width:100%;"/>
+      </div>
+      <div style="display:flex;flex-direction:column;border-bottom:1px solid var(--line);">
+        <label for="mr-email" style="font-family:var(--fm);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--white);opacity:.55;padding:18px 0 4px;">E-mail</label>
+        <input id="mr-email" name="email" type="email" placeholder="jan@novak.sk" required data-cursor="hover" style="background:transparent;border:none;outline:none;color:var(--white);font-family:var(--fb);font-size:1rem;padding:2px 0 16px;width:100%;"/>
+      </div>
+      <div style="display:flex;flex-direction:column;border-bottom:1px solid var(--line);">
+        <label for="mr-event" style="font-family:var(--fm);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--white);opacity:.55;padding:18px 0 4px;">Typ podujatia</label>
+        <select id="mr-event" name="event" data-cursor="hover" style="background:transparent;border:none;outline:none;color:var(--white);font-family:var(--fb);font-size:1rem;padding:2px 0 16px;width:100%;">
+          <option style="color:#111;">Futbalový zápas</option>
+          <option style="color:#111;">Atletické podujatie</option>
+          <option style="color:#111;">Kultúrna akcia / festival</option>
+          <option style="color:#111;">Firemné podujatie</option>
+          <option style="color:#111;">Iné</option>
+        </select>
+      </div>
+      <div style="display:flex;flex-direction:column;border-bottom:1px solid var(--line);">
+        <label for="mr-msg" style="font-family:var(--fm);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--white);opacity:.55;padding:18px 0 4px;">Správa</label>
+        <textarea id="mr-msg" name="message" placeholder="Povedzte nám viac o podujatí..." data-cursor="hover" style="background:transparent;border:none;outline:none;color:var(--white);font-family:var(--fb);font-size:1rem;padding:2px 0 16px;width:100%;resize:none;min-height:90px;"></textarea>
+      </div>
+      <div style="margin-top:30px;">
+        <button type="submit" data-cursor="hover" data-magnetic style="display:inline-flex;align-items:center;gap:10px;font-family:var(--fd);font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;color:var(--red);background:var(--white);border:none;padding:18px 36px;border-radius:100px;transition:transform .25s,box-shadow .4s;">Odoslať dopyt →</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer style="background:var(--red-deep);padding:54px 44px 40px;border-top:1px solid var(--line);">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;padding-bottom:36px;border-bottom:1px solid var(--line);">
+      <a href="#top" data-cursor="hover" data-magnetic style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+        <img src="assets/logo-icon.png" alt="MediReady" style="width:34px;height:34px;border-radius:8px;"/>
+
+      </a>
+      <div style="display:flex;gap:30px;flex-wrap:wrap;">
+        <a href="#piliere" data-cursor="hover" style="font-family:var(--fm);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--white);opacity:.65;text-decoration:none;">Služby</a>
+        <a href="#mesta" data-cursor="hover" style="font-family:var(--fm);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--white);opacity:.65;text-decoration:none;">Mestá</a>
+        <a href="#" data-open-form data-cursor="hover" style="font-family:var(--fm);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--white);opacity:.65;text-decoration:none;">Pridaj sa</a>
+        <a href="https://www.instagram.com/medireadysk" target="_blank" rel="noopener" data-cursor="hover" style="font-family:var(--fm);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--white);opacity:.65;text-decoration:none;">Instagram</a>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-top:26px;">
+      <span style="font-family:var(--fm);font-size:11px;letter-spacing:.1em;color:var(--white);opacity:.5;">© 2025 MediReady · Žižkova 1, Bratislava 811 02</span>
+      <span style="font-family:var(--fm);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--white);opacity:.5;">Skillset, ktorý fakulta nedá.</span>
+    </div>
+  </div>
+</footer>
+
+</main>
+
+<div id="mrFormModal" style="position:fixed;inset:0;z-index:800;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,2,1,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);">
+  <div id="mrFormPanel" style="position:relative;width:min(720px,100%);height:min(88vh,900px);background:#130f0d;border:1px solid rgba(251,247,239,.13);border-radius:24px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 100px rgba(0,0,0,.6);animation:mr-modal-in .45s cubic-bezier(.16,1,.3,1) both;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:22px 28px;border-bottom:1px solid rgba(251,247,239,.1);flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:13px;">
+        <img src="assets/logo-icon.png" alt="" style="width:38px;height:38px;border-radius:9px;"/>
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <span style="font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:15px;color:#fbf7ef;letter-spacing:-.01em;">Pridaj sa do tímu</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(251,247,239,.4);">MediReady · Nábor 2026</span>
+        </div>
+      </div>
+      <button id="mrFormClose" data-cursor="hover" style="width:38px;height:38px;border-radius:50%;background:rgba(251,247,239,.08);border:1px solid rgba(251,247,239,.12);display:flex;align-items:center;justify-content:center;color:#fbf7ef;transition:background .2s;flex-shrink:0;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="mrJoinFormWrap" style="flex:1;overflow-y:auto;padding:28px 32px 38px;">
+
+      <form id="mrJoinForm" novalidate style="display:flex;flex-direction:column;gap:0;">
+
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:linear-gradient(120deg,rgba(180,22,8,.14),rgba(180,22,8,.04));border:1px solid rgba(180,22,8,.28);border-radius:14px;padding:15px 17px;margin:0 0 28px;">
+          <span style="display:inline-flex;align-items:center;gap:7px;font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:.92rem;color:#fbf7ef;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e8635a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            Flexibilná brigáda
+          </span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;color:rgba(251,247,239,.55);">8–13€/hod.</span>
+          <span style="width:3px;height:3px;border-radius:50%;background:rgba(251,247,239,.3);"></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.04em;color:rgba(251,247,239,.55);">BA · Martin · Košice</span>
+          <span style="flex-basis:100%;height:0;"></span>
+          <span style="font-family:'Instrument Sans',sans-serif;font-size:.84rem;line-height:1.5;color:rgba(251,247,239,.55);">Po vyplnení ťa kontaktujeme na pohovor — kapacita je limitovaná.</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+          <div>
+            <label for="mrJoinName" class="mr-flabel">Meno a priezvisko *</label>
+            <input id="mrJoinName" type="text" required placeholder="Ján Novák" class="mr-fld"/>
+          </div>
+          <div>
+            <label for="mrJoinEmail" class="mr-flabel">E-mail *</label>
+            <input id="mrJoinEmail" type="email" required placeholder="jan@email.sk" class="mr-fld"/>
+          </div>
+        </div>
+
+        <div class="mr-fsec">
+          <div class="mr-flabel">Univerzita</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button type="button" class="mr-chip" data-chip="LF UK" data-group="uni">LF UK</button>
+            <button type="button" class="mr-chip" data-chip="JLF UK" data-group="uni">JLF UK</button>
+            <button type="button" class="mr-chip" data-chip="LF SZU" data-group="uni">LF SZU</button>
+            <button type="button" class="mr-chip" data-chip="LF UPJŠ" data-group="uni">LF UPJŠ</button>
+            <button type="button" class="mr-chip" data-chip="Iná" data-group="uni">Iná</button>
+          </div>
+          <input id="mrJoinUniOther" type="text" placeholder="Zadaj názov fakulty…" class="mr-fld" style="display:none;margin-top:11px;"/>
+        </div>
+
+        <div class="mr-fsec">
+          <div class="mr-flabel">Ročník štúdia</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button type="button" class="mr-chip" data-chip="1." data-group="rocnik">1.</button>
+            <button type="button" class="mr-chip" data-chip="2." data-group="rocnik">2.</button>
+            <button type="button" class="mr-chip" data-chip="3." data-group="rocnik">3.</button>
+            <button type="button" class="mr-chip" data-chip="4." data-group="rocnik">4.</button>
+            <button type="button" class="mr-chip" data-chip="5." data-group="rocnik">5.</button>
+            <button type="button" class="mr-chip" data-chip="6." data-group="rocnik">6.</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+          <div>
+            <div class="mr-flabel" style="margin-bottom:4px;">Vodičský preukaz?</div>
+            <div style="font-family:'Instrument Sans',sans-serif;font-size:.76rem;color:rgba(251,247,239,.4);margin-bottom:10px;">nie je podmienkou</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <button type="button" class="mr-chip" data-chip="áno" data-group="vodicak">Áno</button>
+              <button type="button" class="mr-chip" data-chip="nie" data-group="vodicak">Nie</button>
+            </div>
+          </div>
+          <div>
+            <div class="mr-flabel" style="margin-bottom:4px;">Auto cez víkendy?</div>
+            <div style="font-family:'Instrument Sans',sans-serif;font-size:.76rem;color:rgba(251,247,239,.4);margin-bottom:10px;">nie je podmienkou</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <button type="button" class="mr-chip" data-chip="áno" data-group="auto">Áno</button>
+              <button type="button" class="mr-chip" data-chip="nie" data-group="auto">Nie</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mr-fsec">
+          <div class="mr-flabel">Kde sa zdržiavaš cez víkendy?</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button type="button" class="mr-chip" data-chip="internát/byt" data-group="kde">Internát / byt (BA · Martin · Košice)</button>
+            <button type="button" class="mr-chip" data-chip="Iné" data-group="kde">Iné</button>
+          </div>
+          <input id="mrJoinKdeOther" type="text" placeholder="Zadaj mesto…" class="mr-fld" style="display:none;margin-top:11px;"/>
+        </div>
+
+        <div style="margin-bottom:28px;">
+          <label for="mrJoinMotivacia" class="mr-flabel">Prečo sa chceš pridať? <span style="text-transform:none;letter-spacing:0;color:rgba(251,247,239,.35);">(max 3 vety)</span></label>
+          <textarea id="mrJoinMotivacia" placeholder="Napíš pár slov…" class="mr-fld" style="resize:none;min-height:92px;line-height:1.6;"></textarea>
+        </div>
+
+        <div id="mrJoinError" style="display:none;font-family:'Instrument Sans',sans-serif;font-size:.88rem;color:#f87171;margin-bottom:16px;">Vyplň prosím meno a e-mail.</div>
+
+        <button type="submit" data-cursor="hover" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:1.02rem;color:#fff;background:#b41608;border:none;padding:17px 32px;border-radius:13px;transition:transform .2s,box-shadow .3s,background .25s;box-shadow:0 10px 30px rgba(180,22,8,.4);">Odoslať prihlášku
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+
+      </form>
+
+      <div id="mrJoinSuccess" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:320px;gap:18px;padding:40px 20px;text-align:center;">
+        <div style="width:68px;height:68px;background:rgba(180,22,8,.14);border:1.5px solid #b41608;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#e05040" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg>
+        </div>
+        <h3 style="font-family:'Instrument Serif',serif;font-size:1.9rem;color:#fbf7ef;margin:0;line-height:1.1;">Prihláška odoslaná!</h3>
+        <p style="font-family:'Instrument Sans',sans-serif;font-size:1rem;color:rgba(251,247,239,.62);margin:0;max-width:300px;line-height:1.65;">Ďakujeme za záujem. Kontaktujeme ťa čoskoro na pohovor.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount(){
+    const root = document;
+    this._cleanup = [];
+    this._raf = null;
+    this._watchers = [];
+    this.setupLoader(root);
+    this.setupCursor(root);
+    this.setupMagnetic(root);
+    this.setupHero(root);
+    this.setupNav(root);
+    this.setupFadeReveals(root);
+    this.setupRevealScrub(root);
+    this.setupCounters(root);
+    this.setupHovers(root);
+    this.setupForm(root);
+    this.setupFormModal(root);
+    this.setupSmoothNav(root);
+    this.setupLogoHover(root);
+    let wq=false;
+    const runW=()=>{ wq=false; this._watchers.forEach(w=>{ try{ w(); }catch(e){} }); };
+    const onW=()=>{ if(!wq){ wq=true; requestAnimationFrame(runW); } };
+    this.on(window,'scroll',onW,{passive:true});
+    this.on(window,'resize',onW);
+    runW();
+  }
+
+  setupFormModal(root){
+    const modal=root.getElementById('mrFormModal');
+    const closeBtn=root.getElementById('mrFormClose');
+    if(!modal) return;
+    const open=()=>{
+      modal.style.display='flex';
+      document.body.style.overflow='hidden';
+      const panel=root.getElementById('mrFormPanel');
+      if(panel){ panel.style.animation='none'; void panel.offsetWidth; panel.style.animation='mr-modal-in .45s cubic-bezier(.16,1,.3,1) both'; }
+    };
+    const close=()=>{ modal.style.display='none'; document.body.style.overflow=''; };
+    root.querySelectorAll('[data-open-form]').forEach(el=>{ this.on(el,'click',e=>{ e.preventDefault(); open(); }); });
+    if(closeBtn) this.on(closeBtn,'click',close);
+    this.on(modal,'click',e=>{ if(e.target===modal) close(); });
+    this.on(document,'keydown',e=>{ if(e.key==='Escape'&&modal.style.display!=='none') close(); });
+    this.setupJoinForm(root);
+  }
+
+  setupJoinForm(root){
+    const sel={};
+    // chip selection
+    root.querySelectorAll('.mr-chip').forEach(chip=>{
+      this.on(chip,'click',()=>{
+        const group=chip.getAttribute('data-group');
+        const val=chip.getAttribute('data-chip');
+        sel[group]=val;
+        root.querySelectorAll(`.mr-chip[data-group="${group}"]`).forEach(c=>{
+          if(c.getAttribute('data-chip')===val) c.classList.add('mr-chip-sel');
+          else c.classList.remove('mr-chip-sel');
+        });
+        // show/hide "other" text inputs
+        if(group==='uni'){
+          const o=root.getElementById('mrJoinUniOther');
+          if(o) o.style.display=val==='Iná'?'block':'none';
+        }
+        if(group==='kde'){
+          const o=root.getElementById('mrJoinKdeOther');
+          if(o) o.style.display=val==='Iné'?'block':'none';
+        }
+      });
+    });
+    // submit
+    const form=root.getElementById('mrJoinForm');
+    if(!form) return;
+    this.on(form,'submit',e=>{
+      e.preventDefault();
+      const name=root.getElementById('mrJoinName').value.trim();
+      const email=root.getElementById('mrJoinEmail').value.trim();
+      const err=root.getElementById('mrJoinError');
+      if(!name||!email){ if(err) err.style.display='block'; return; }
+      if(err) err.style.display='none';
+      const uni=sel.uni==='Iná'?(root.getElementById('mrJoinUniOther').value.trim()||'Iná'):sel.uni||'—';
+      const kde=sel.kde==='Iné'?(root.getElementById('mrJoinKdeOther').value.trim()||'Iné'):sel.kde||'—';
+      const motivacia=root.getElementById('mrJoinMotivacia').value.trim();
+      const lines=[
+        `Meno: ${name}`,
+        `Email: ${email}`,
+        `Univerzita: ${uni}`,
+        `Ročník: ${sel.rocnik||'—'}`,
+        `Vodičský preukaz: ${sel.vodicak||'—'}`,
+        `Auto cez víkendy: ${sel.auto||'—'}`,
+        `Kde cez víkendy: ${kde}`,
+        ``,
+        `Prečo MediReady:`,
+        motivacia||'—'
+      ];
+      const sub=encodeURIComponent(`Prihláška MediReady – ${name}`);
+      const body=encodeURIComponent(lines.join('\n'));
+      window.location.href=`mailto:dominik.gasparik1@gmail.com,adam.gbur@gmail.com?subject=${sub}&body=${body}`;
+      // show success
+      form.style.display='none';
+      const suc=root.getElementById('mrJoinSuccess');
+      if(suc) suc.style.display='flex';
+    });
+  }
+  setupLogoHover(root){
+    const link=root.querySelector('nav a[href="#top"]');
+    const popup=root.getElementById('logoPopup');
+    if(!link||!popup) return;
+    const show=()=>{ popup.style.opacity='1'; popup.style.transform='translateY(0) scale(1)'; popup.style.pointerEvents='auto'; };
+    const hide=()=>{ popup.style.opacity='0'; popup.style.transform='translateY(10px) scale(.95)'; popup.style.pointerEvents='none'; };
+    this.on(link,'mouseenter',show);
+    this.on(link,'mouseleave',hide);
+  }
+  smoothScrollTo(y,dur=520){
+    const s=window.scrollY,d=y-s,t0=performance.now();
+    const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    const step=n=>{ const t=Math.min(1,(n-t0)/dur); window.scrollTo(0,s+d*ease(t)); if(t<1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+  setupSmoothNav(root){
+    root.querySelectorAll('a[href^="#"]').forEach(a=>{
+      this.on(a,'click',e=>{
+        const href=a.getAttribute('href'); if(!href||href==='#') return;
+        const id=href.slice(1); const target=document.getElementById(id);
+        const y=target?Math.max(0,target.getBoundingClientRect().top+window.scrollY-74):0;
+        e.preventDefault(); this.smoothScrollTo(y);
+      });
+    });
+  }
+  setupHovers(root){
+    root.querySelectorAll('[data-mr-card]').forEach(card=>{
+      const img=card.querySelector('[data-mr-img]');
+      this.on(card,'mouseenter',()=>{ card.style.transform='translateY(-8px)'; card.style.borderColor='rgba(210,31,16,.55)'; if(img){ img.style.transform='scale(1.06)'; img.style.filter='grayscale(0%)'; } });
+      this.on(card,'mouseleave',()=>{ card.style.transform='translateY(0)'; card.style.borderColor='var(--line)'; if(img){ img.style.transform='scale(1)'; img.style.filter='grayscale(35%)'; } });
+    });
+    const ffig=root.querySelector('.mr-founder-fig');
+    if(ffig){ const fimg=ffig.querySelector('.mr-founder-img');
+      this.on(ffig,'mouseenter',()=>{ if(fimg) fimg.style.transform='scale(1.05)'; });
+      this.on(ffig,'mouseleave',()=>{ if(fimg) fimg.style.transform='scale(1)'; });
+    }
+    root.querySelectorAll('[data-mr-pcard]').forEach(card=>{
+      const icon=card.querySelector('[data-mr-picon]');
+      this.on(card,'mouseenter',()=>{ card.style.transform='translateY(-7px)'; card.style.boxShadow='0 1px 2px rgba(42,35,32,.05),0 30px 60px rgba(42,35,32,.12)'; if(icon) icon.style.transform='scale(1.08) rotate(-3deg)'; });
+      this.on(card,'mouseleave',()=>{ card.style.transform='translateY(0)'; card.style.boxShadow='0 1px 2px rgba(42,35,32,.04),0 18px 44px rgba(42,35,32,.06)'; if(icon) icon.style.transform='scale(1) rotate(0deg)'; });
+    });
+    root.querySelectorAll('[data-mr-city]').forEach(row=>{
+      const name=row.querySelector('[data-mr-cityname]');
+      this.on(row,'mouseenter',()=>{ row.style.paddingLeft='18px'; if(name){ name.style.color='var(--white)'; name.style.webkitTextStroke='0px'; } });
+      this.on(row,'mouseleave',()=>{ row.style.paddingLeft='4px'; if(name){ name.style.color='transparent'; name.style.webkitTextStroke='1.2px var(--white)'; } });
+    });
+  }
+
+  setupForm(root){
+    const form=root.getElementById('mrForm'); if(!form) return;
+    this.on(form,'submit',e=>{
+      e.preventDefault();
+      const d=Object.fromEntries(new FormData(form));
+      const sub=encodeURIComponent(`Záujem o zabezpečenie: ${d.event||'podujatie'}`);
+      const body=encodeURIComponent(`Meno: ${d.name||''}\nEmail: ${d.email||''}\nPodujatie: ${d.event||''}\n\n${d.message||''}`);
+      window.location.href=`mailto:info@mediready.sk?subject=${sub}&body=${body}`;
+    });
+  }
+  clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+  smooth(a,b,x){ let t=this.clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); }
+
+  setupFadeReveals(root){
+    const els=[...root.querySelectorAll('[data-reveal]')];
+    els.forEach(el=>{ el.style.opacity='0'; el.style.transform='translateY(30px)'; el.style.transition='opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)'; el._shown=false; });
+    this._watchers.push(()=>{ els.forEach(el=>{ if(el._shown) return; const r=el.getBoundingClientRect(); if(r.top<window.innerHeight*0.9 && r.bottom>0){ el._shown=true; const d=parseInt(el.getAttribute('data-reveal-delay')||'0',10); el.style.transitionDelay=d+'ms'; el.style.opacity='1'; el.style.transform='none'; } }); });
+  }
+
+  setupCounters(root){
+    const els=[...root.querySelectorAll('[data-count]')];
+    els.forEach(el=>{ el._done=false; });
+    this._watchers.push(()=>{ els.forEach(el=>{ if(el._done) return; const r=el.getBoundingClientRect(); if(r.top<window.innerHeight*0.85 && r.bottom>0){ el._done=true; this.runCount(el); } }); });
+  }
+  runCount(el){
+    const raw=el.getAttribute('data-count'); const target=parseFloat(raw); const dec=raw.indexOf('.')>=0?1:0;
+    const dur=1600; const start=performance.now();
+    const step=(now)=>{ const t=Math.min(1,(now-start)/dur); const e=1-Math.pow(1-t,3); const val=target*e; el.textContent=dec?val.toFixed(1):Math.round(val).toString(); if(t<1) requestAnimationFrame(step); else el.textContent=dec?target.toFixed(1):Math.round(target).toString(); };
+    requestAnimationFrame(step);
+  }
+
+  setupRevealScrub(root){
+    const sec=root.getElementById('mrReveal'); if(!sec) return;
+    const video=root.getElementById('mrVideo'), stage=root.getElementById('mrStage'), prog=root.getElementById('mrProg');
+    let vdur=0;
+    if(video){
+      video.pause();
+      const setD=()=>{ vdur=video.duration||0; };
+      video.addEventListener('loadedmetadata',setD);
+      // serve endpoint ignores Range requests, so native <video> seeking stalls.
+      // fetch the file once and feed the element an in-memory blob URL (fully seekable).
+      fetch(video.getAttribute('src')).then(r=>r.blob()).then(b=>{ video.src=URL.createObjectURL(b); video.load(); }).catch(()=>{});
+      if(video.readyState>=1) setD();
+    }
+    const lines=[...root.querySelectorAll('#mrReveal [data-line]')];
+    let ticking=false, lastT=-1;
+    const update=()=>{
+      ticking=false;
+      const rect=sec.getBoundingClientRect();
+      const total=sec.offsetHeight-window.innerHeight;
+      const p=this.clamp(-rect.top/Math.max(1,total),0,1);
+      if(video&&vdur>0){ const t=p*(vdur-0.05); if(Math.abs(t-lastT)>0.008){ try{ video.currentTime=t; }catch(e){} lastT=t; } }
+      if(stage){ stage.style.transform=`translateY(${(p-0.5)*-22}px)`; }
+      const active=p<0.4?0:(p<0.7?1:2);
+      lines.forEach((l,i)=>{ l.style.opacity=(i===active&&p>0.12)?'1':'0'; });
+      if(prog) prog.style.transform=`scaleX(${p})`;
+    };
+    const onScroll=()=>{ if(!ticking){ ticking=true; requestAnimationFrame(update); } };
+    this.on(window,'scroll',onScroll,{passive:true});
+    this.on(window,'resize',onScroll);
+    update();
+  }
+  componentWillUnmount(){
+    if(this._raf) cancelAnimationFrame(this._raf);
+    if(this._sphereRaf) cancelAnimationFrame(this._sphereRaf);
+    (this._cleanup||[]).forEach(fn=>fn());
+  }
+  on(target,ev,fn,opts){ target.addEventListener(ev,fn,opts); this._cleanup.push(()=>target.removeEventListener(ev,fn,opts)); }
+
+  setupLoader(root){
+    const el=root.getElementById('mrLoader'); if(!el) return;
+    const hide=()=>{
+      el.classList.add('mr-gone');
+      // fade cursors in after loader leaves
+      const ring=root.getElementById('mrCursorRing'), dot=root.getElementById('mrCursorDot');
+      if(ring){ ring.style.transition='opacity .5s'; ring.style.opacity='1'; }
+      if(dot){ dot.style.transition='opacity .5s'; dot.style.opacity='1'; }
+      setTimeout(()=>{ if(el.parentNode) el.parentNode.removeChild(el); },750);
+    };
+    const min=new Promise(r=>setTimeout(r,1800));
+    const load=document.readyState==='complete'?Promise.resolve():new Promise(r=>this.on(window,'load',r,{once:true}));
+    Promise.all([min,load]).then(hide);
+  }
+
+  setupCursor(root){
+    const ring=root.getElementById('mrCursorRing'), dot=root.getElementById('mrCursorDot');
+    if(!ring||!dot) return;
+    if(window.matchMedia('(hover:none),(max-width:860px)').matches){ ring.style.display='none'; dot.style.display='none'; return; }
+    ring.style.opacity='0'; dot.style.opacity='0';
+    let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+    this.on(window,'mousemove',e=>{ mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+    const loop=()=>{ rx+=(mx-rx)*.18; ry+=(my-ry)*.18; ring.style.left=rx+'px'; ring.style.top=ry+'px'; this._raf=requestAnimationFrame(loop); };
+    loop();
+    root.querySelectorAll('[data-cursor="hover"]').forEach(el=>{
+      this.on(el,'mouseenter',()=>{ ring.style.width='62px'; ring.style.height='62px'; ring.style.background='rgba(251,247,239,.1)'; });
+      this.on(el,'mouseleave',()=>{ ring.style.width='42px'; ring.style.height='42px'; ring.style.background='transparent'; });
+    });
+  }
+
+  setupMagnetic(root){
+    root.querySelectorAll('[data-magnetic]').forEach(el=>{
+      const strength=parseFloat(el.getAttribute('data-magnetic'))||0.32;
+      this.on(el,'mousemove',e=>{ const r=el.getBoundingClientRect(); const x=e.clientX-(r.left+r.width/2); const y=e.clientY-(r.top+r.height/2); el.style.transform=`translate(${x*strength}px,${y*strength}px)`; });
+      this.on(el,'mouseleave',()=>{ el.style.transform='translate(0,0)'; });
+    });
+  }
+
+  setupHero(root){
+    const hero=root.getElementById('hero');
+    const content=root.getElementById('heroContent');
+    const canvas=root.getElementById('heroSphere');
+    if(canvas&&hero) this.initSphere(canvas,hero);
+    if(!hero) return;
+    const layers=[...hero.querySelectorAll('[data-par]')];
+    let tx=0,ty=0,cx=0,cy=0,raf=null;
+    const render=()=>{
+      raf=null; cx+=(tx-cx)*0.09; cy+=(ty-cy)*0.09;
+      layers.forEach(el=>{ const d=parseFloat(el.getAttribute('data-par'))||0; el.style.transform=`translate(${cx*d*100}px,${cy*d*100}px)`; });
+      if(content) content.style.transform=`translate(${cx*16}px,${cy*12}px)`;
+      if(Math.abs(tx-cx)>0.001||Math.abs(ty-cy)>0.001) raf=requestAnimationFrame(render);
+    };
+    const kick=()=>{ if(!raf) raf=requestAnimationFrame(render); };
+    this.on(hero,'mousemove',e=>{ const r=hero.getBoundingClientRect(); tx=((e.clientX-r.left)/r.width-.5)*2; ty=((e.clientY-r.top)/r.height-.5)*2; kick(); });
+    this.on(hero,'mouseleave',()=>{ tx=0; ty=0; kick(); });
+  }
+
+  initSphere(canvas,hero){
+    const N=1650, inc=Math.PI*(3-Math.sqrt(5));
+    if(!window.__mrPts){ const pts=[]; for(let i=0;i<N;i++){ const y=1-(i/(N-1))*2; const r=Math.sqrt(Math.max(0,1-y*y)); const phi=i*inc; pts.push([Math.cos(phi)*r,y,Math.sin(phi)*r]); } window.__mrPts=pts; }
+    const st=window.__mrSphere||(window.__mrSphere={rotY:0,rotX:-0.34,mvx:0,mvy:0,tmvx:0,tmvy:0});
+    if(!window.__mrSphereMouse){
+      window.__mrSphereMouse=true;
+      window.addEventListener('mousemove',e=>{ const h=document.getElementById('hero'); if(!h) return; const r=h.getBoundingClientRect(); if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom) return; st.tmvx=((e.clientX-r.left)/r.width-.5); st.tmvy=((e.clientY-r.top)/r.height-.5); });
+    }
+    if(window.__mrSpinning) return;
+    window.__mrSpinning=true;
+    const spin=()=>{
+      const cv=document.getElementById('heroSphere'), h=document.getElementById('hero');
+      if(cv&&h){
+        const ctx=cv.getContext('2d'), rect=h.getBoundingClientRect();
+        const DPR=Math.min(2,window.devicePixelRatio||1), W=rect.width, H=rect.height;
+        if(W>0&&H>0){
+          if(cv.width!==Math.round(W*DPR)||cv.height!==Math.round(H*DPR)){ cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); }
+          ctx.setTransform(DPR,0,0,DPR,0,0);
+          const cx=W/2, cy=H*0.47, R=Math.min(W*0.46,H*0.6), pts=window.__mrPts;
+          st.mvx+=(st.tmvx-st.mvx)*0.05; st.mvy+=(st.tmvy-st.mvy)*0.05;
+          st.rotY+=0.0019+st.mvx*0.013; const txr=-0.34+st.mvy*0.55; st.rotX+=(txr-st.rotX)*0.05;
+          const sY=Math.sin(st.rotY),cY=Math.cos(st.rotY),sX=Math.sin(st.rotX),cX=Math.cos(st.rotX);
+          ctx.clearRect(0,0,W,H);
+          const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R*1.2);
+          g.addColorStop(0,'rgba(190,30,14,0.30)'); g.addColorStop(0.5,'rgba(150,18,9,0.12)'); g.addColorStop(1,'rgba(150,18,9,0)');
+          ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,R*1.2,0,6.2832); ctx.fill();
+          for(let i=0;i<N;i++){ const p=pts[i];
+            const x1=p[0]*cY - p[2]*sY, z1=p[0]*sY + p[2]*cY;
+            const y2=p[1]*cX - z1*sX, z2=p[1]*sX + z1*cX;
+            const depth=(z2+1)/2, dd=depth*depth;
+            const sx=cx+x1*R, sy=cy+y2*R;
+            const size=dd*2.6+0.3, a=dd*0.92+0.04;
+            const rr=(95+depth*165)|0, gg=(10+depth*55)|0, bb=(6+depth*32)|0;
+            ctx.fillStyle='rgba('+rr+','+gg+','+bb+','+a+')';
+            ctx.beginPath(); ctx.arc(sx,sy,size,0,6.2832); ctx.fill();
+          }
+        }
+      }
+      requestAnimationFrame(spin);
+    };
+    requestAnimationFrame(spin);
+  }
+
+  setupNav(root){
+    const nav=root.getElementById('mrNav');
+    if(!nav) return;
+    const onScroll=()=>{
+      if(window.scrollY>60){ nav.style.background='rgba(82,9,4,.72)'; nav.style.backdropFilter='blur(16px)'; nav.style.webkitBackdropFilter='blur(16px)'; nav.style.borderBottomColor='var(--line)'; nav.style.padding='15px 44px'; }
+      else { nav.style.background='transparent'; nav.style.backdropFilter='none'; nav.style.webkitBackdropFilter='none'; nav.style.borderBottomColor='transparent'; nav.style.padding='24px 44px'; }
+    };
+    this.on(window,'scroll',onScroll,{passive:true}); onScroll();
+  }
+}
+</script>
+</body>
+</html>
